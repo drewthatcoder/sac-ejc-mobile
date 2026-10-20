@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Pressable, ScrollView, Text } from "react-native";
-import { FAQS } from "../src/content";
-import { s } from "../src/components/ui";
-import { colors } from "../src/theme";
+import { FAQS } from "../../src/content";
+import { s } from "../../src/components/ui";
+import { colors } from "../../src/theme";
 
 // TODO: Drew to fill in real questions and answers in src/content.ts (FAQS).
 export default function Faq() {

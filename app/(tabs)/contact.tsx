@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Text } from "react-native";
-import { CONTACT_FIELDS } from "../src/content";
-import { Banner, Button, Field, OfflineNotice, s } from "../src/components/ui";
-import { insertRow, isBackendConfigured } from "../src/lib/supabase";
-import { ContactForm, validateContact } from "../src/lib/validation";
+import { CONTACT_FIELDS } from "../../src/content";
+import { Banner, Button, Field, OfflineNotice, s } from "../../src/components/ui";
+import { insertRow, isBackendConfigured } from "../../src/lib/supabase";
+import { ContactForm, validateContact } from "../../src/lib/validation";
 
 const empty: ContactForm = { name: "", email: "", phone: "", subject: "", message: "" };
 const kb = { email: "email-address", tel: "phone-pad", text: "default" } as const;

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from "react-native";
-import { INTERESTS } from "../src/content";
-import { Banner, Button, Field, OfflineNotice, s } from "../src/components/ui";
-import { insertRow, isBackendConfigured } from "../src/lib/supabase";
-import { JoinForm, validateJoin } from "../src/lib/validation";
-import { colors } from "../src/theme";
+import { INTERESTS } from "../../src/content";
+import { Banner, Button, Field, OfflineNotice, s } from "../../src/components/ui";
+import { insertRow, isBackendConfigured } from "../../src/lib/supabase";
+import { JoinForm, validateJoin } from "../../src/lib/validation";
+import { colors } from "../../src/theme";
 
 const empty: JoinForm = { firstName: "", lastName: "", email: "", phone: "", zip: "", interests: [], message: "" };
 

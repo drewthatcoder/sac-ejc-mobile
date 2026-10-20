@@ -15,4 +15,6 @@ If the env vars are unset, Contact and Join show an "online submissions aren't a
 ## Backend
 Apply `supabase/migrations/*.sql` to a new Supabase project (tables `contact_submissions`, `join_submissions`; RLS on; anon INSERT only).
 
+Accounts: `app/login.tsx` and `app/signup.tsx` are design-only. They call the stub in `src/lib/auth.ts`, which returns "Accounts coming soon" until Supabase Auth is wired in. Every tab works without signing in.
+
 Not published to any store.

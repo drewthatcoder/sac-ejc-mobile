@@ -1,17 +1,17 @@
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
-import { MISSION_PILLARS, ORG_NAME, PARTNERS, SUBTITLE, TAGLINE } from "../src/content";
-import { Button, s } from "../src/components/ui";
-import { colors } from "../src/theme";
+import { MISSION_PILLARS, ORG_NAME, PARTNERS, SUBTITLE, TAGLINE } from "../../src/content";
+import { Button, s } from "../../src/components/ui";
+import { colors } from "../../src/theme";
 
 export default function Home() {
   const router = useRouter();
   return (
     <ScrollView style={{ backgroundColor: colors.bg }}>
       <View style={st.hero}>
-        <Image source={require("../assets/images/hero-sacramento.jpg")} style={StyleSheet.absoluteFill} resizeMode="cover" />
+        <Image source={require("../../assets/images/hero-sacramento.jpg")} style={StyleSheet.absoluteFill} resizeMode="cover" />
         <View style={st.overlay}>
-          <Image source={require("../assets/images/logo-sejc.png")} style={st.logo} resizeMode="contain" accessibilityLabel="SAC EJC logo" />
+          <Image source={require("../../assets/images/logo-sejc.png")} style={st.logo} resizeMode="contain" accessibilityLabel="SAC EJC logo" />
           <Text style={st.org}>{ORG_NAME}</Text>
           <Text style={st.tagline}>{TAGLINE}</Text>
           <Text style={st.sub}>{SUBTITLE}</Text>

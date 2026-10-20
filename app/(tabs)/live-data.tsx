@@ -1,7 +1,7 @@
 import { ScrollView, Text, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
-import { CLARITY_MAP_URL } from "../src/content";
-import { Button, s } from "../src/components/ui";
+import { CLARITY_MAP_URL } from "../../src/content";
+import { Button, s } from "../../src/components/ui";
 
 export default function LiveData() {
   return (
