@@ -1,4 +1,4 @@
-import { Image, ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { MISSION_PILLARS, ORG_NAME, PARTNERS, SUBTITLE, TAGLINE } from "../src/content";
 import { Button, s } from "../src/components/ui";
@@ -8,7 +8,8 @@ export default function Home() {
   const router = useRouter();
   return (
     <ScrollView style={{ backgroundColor: colors.bg }}>
-      <ImageBackground source={require("../assets/images/hero-sacramento.jpg")} style={st.hero}>
+      <View style={st.hero}>
+        <Image source={require("../assets/images/hero-sacramento.jpg")} style={StyleSheet.absoluteFill} resizeMode="cover" />
         <View style={st.overlay}>
           <Image source={require("../assets/images/logo-sejc.png")} style={st.logo} resizeMode="contain" accessibilityLabel="SAC EJC logo" />
           <Text style={st.org}>{ORG_NAME}</Text>
@@ -19,7 +20,7 @@ export default function Home() {
             <Button title="Donate" onPress={() => router.push("/donate")} style={{ flex: 1, backgroundColor: colors.accent }} />
           </View>
         </View>
-      </ImageBackground>
+      </View>
       <View style={s.screen}>
         <Text style={s.h1}>Our Mission</Text>
         {MISSION_PILLARS.map((p) => (
