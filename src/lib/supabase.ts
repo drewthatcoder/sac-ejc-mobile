@@ -7,10 +7,12 @@ const key = process.env.EXPO_PUBLIC_SUPABASE_KEY;
 export const supabase: SupabaseClient | null =
   url && key ? createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } }) : null;
 
+export const isBackendConfigured = supabase !== null;
+
 export type SubmitResult = { ok: true } | { ok: false; notConnected?: boolean; error: string };
 
 export async function insertRow(table: "contact_submissions" | "join_submissions", row: Record<string, unknown>): Promise<SubmitResult> {
-  if (!supabase) return { ok: false, notConnected: true, error: "Submissions are not yet connected. Your form looks good — please check back soon!" };
+  if (!supabase) return { ok: false, notConnected: true, error: "Online submissions aren't available yet." };
   const { error } = await supabase.from(table).insert(row);
   return error ? { ok: false, error: error.message } : { ok: true };
 }

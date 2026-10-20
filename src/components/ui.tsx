@@ -1,6 +1,8 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, TextInput, TextInputProps, View, ViewStyle } from "react-native";
+import { Linking } from "react-native";
 import { colors } from "../theme";
+import { OFFLINE_NO_ALTERNATIVE, OFFLINE_NOTICE, ORG_CONTACT_EMAIL } from "../content";
 
 export function Field({ label, required, error, ...props }: TextInputProps & { label: string; required?: boolean; error?: string }) {
   return (
@@ -42,3 +44,24 @@ export const s = StyleSheet.create({
   banner: { borderRadius: 10, padding: 14, marginBottom: 14 },
   bannerText: { color: colors.text, fontSize: 15, lineHeight: 21 },
 });
+
+/** Shown when no backend is configured. Offers a mailto: fallback only if a real org email exists. */
+export function OfflineNotice({ afterSubmit, subject, body }: { afterSubmit?: boolean; subject: string; body: string }) {
+  const mailto = ORG_CONTACT_EMAIL
+    ? `mailto:${ORG_CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    : null;
+  return (
+    <View style={[s.banner, { backgroundColor: "#fff4df", borderWidth: 1, borderColor: colors.accent }]} accessibilityRole="alert">
+      <Text style={[s.bannerText, { fontWeight: "700", marginBottom: 4 }]}>{afterSubmit ? "Your form looks good, but it wasn't sent." : "Heads up"}</Text>
+      <Text style={s.bannerText}>{OFFLINE_NOTICE}</Text>
+      {mailto ? (
+        <>
+          <Text style={[s.bannerText, { marginTop: 6 }]}>You can email us your message instead:</Text>
+          <Button title={`Email ${ORG_CONTACT_EMAIL}`} variant="outline" style={{ marginTop: 10 }} onPress={() => Linking.openURL(mailto)} />
+        </>
+      ) : (
+        <Text style={[s.bannerText, { marginTop: 6 }]}>{OFFLINE_NO_ALTERNATIVE}</Text>
+      )}
+    </View>
+  );
+}
