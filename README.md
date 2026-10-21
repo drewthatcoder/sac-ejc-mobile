@@ -15,7 +15,7 @@ If the env vars are unset, Contact and Join show an "online submissions aren't a
 ## Backend
 Supabase project `fdkmurqcsshjjnkhnaod` (schema managed by Mobile Lead). Forms insert into `contact_submissions` / `join_submissions` (insert-only, no read via API). Auth uses Supabase Auth with AsyncStorage sessions; `profiles` rows are created by the `on_auth_user_created` trigger.
 
-`supabase/functions/delete-account` backs the in-app "Delete account" button. It is **not deployed**; deploy with
+`supabase/functions/delete-account` backs the in-app "Delete account" button. It deletes the user's contact/join submissions (case-insensitive email match), their profile, then the auth user, and fails closed on any error. It is **not deployed**; deploy with
 `supabase functions deploy delete-account --project-ref fdkmurqcsshjjnkhnaod`.
 
 Not published to any store.

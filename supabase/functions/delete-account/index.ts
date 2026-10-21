@@ -1,7 +1,8 @@
 // Supabase Edge Function: delete-account (Deno). NOT DEPLOYED — Lead deploys with:
 //   supabase functions deploy delete-account --project-ref fdkmurqcsshjjnkhnaod
-// Verifies the caller's JWT, then deletes that user with the service role.
-// public.profiles.id -> auth.users.id is ON DELETE CASCADE, so the profile row goes with it.
+// Verifies the caller's JWT, then (service role, server-side only) deletes the user's
+// contact_submissions + join_submissions rows (case-insensitive email match), their profiles row,
+// and finally the auth user. Any delete error returns 500 and the auth user is kept.
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const cors = {
@@ -27,7 +28,22 @@ Deno.serve(async (req) => {
   const { data, error } = await admin.auth.getUser(jwt);
   if (error || !data.user) return json({ error: "Invalid or expired session" }, 401);
 
-  const { error: delErr } = await admin.auth.admin.deleteUser(data.user.id);
+  const user = data.user;
+
+  // Fail closed: if any data delete errors, stop before deleting the auth user.
+  if (user.email) {
+    // Case-insensitive exact match: ILIKE with LIKE wildcards (and the escape char) escaped.
+    const pattern = user.email.replace(/[\\%_]/g, (c) => "\\" + c);
+    for (const table of ["contact_submissions", "join_submissions"]) {
+      const { error: e } = await admin.from(table).delete().ilike("email", pattern);
+      if (e) return json({ error: `Could not delete ${table}` }, 500);
+    }
+  }
+
+  const { error: profErr } = await admin.from("profiles").delete().eq("id", user.id);
+  if (profErr) return json({ error: "Could not delete profile" }, 500);
+
+  const { error: delErr } = await admin.auth.admin.deleteUser(user.id);
   if (delErr) return json({ error: "Could not delete account" }, 500);
   return json({ ok: true });
 });
