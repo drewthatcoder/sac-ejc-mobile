@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { Banner, Button, s } from "../../src/components/ui";
 import { handleAuthCallbackUrl } from "../../src/lib/auth";
 import { latestAuthUrl, onDeepLink } from "../../src/lib/deeplink";
@@ -32,6 +32,7 @@ export default function AuthCallback() {
   if (!error) return <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.bg }}><ActivityIndicator color={colors.primary} /><Text style={{ marginTop: 12, color: colors.muted }}>Signing you in…</Text></View>;
   return (
     <ScrollView contentContainerStyle={s.screen}>
+      <Stack.Screen options={{ title: "Link Problem" }} />
       <Text style={s.h1}>Link problem</Text>
       <Banner kind="error" text={error} />
       <Button title="Go to Sign In" onPress={() => router.replace("/login")} />
