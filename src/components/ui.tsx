@@ -45,6 +45,13 @@ export const s = StyleSheet.create({
   bannerText: { color: colors.text, fontSize: 15, lineHeight: 21 },
 });
 
+/** "Email us" fallback with the form contents prefilled; renders nothing if no org email is set. */
+export function MailtoFallback({ subject, body }: { subject: string; body: string }) {
+  if (!ORG_CONTACT_EMAIL) return null;
+  const href = `mailto:${ORG_CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  return <Button title={`Email us at ${ORG_CONTACT_EMAIL}`} variant="outline" style={{ marginBottom: 14 }} onPress={() => Linking.openURL(href)} />;
+}
+
 /** Opens the privacy policy in the system browser. */
 export function PrivacyLink({ style }: { style?: ViewStyle }) {
   return (

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { INTERESTS } from "../../src/content";
-import { Banner, Button, Field, OfflineNotice, s } from "../../src/components/ui";
+import { Banner, Button, Field, MailtoFallback, OfflineNotice, s } from "../../src/components/ui";
 import { insertRow, isBackendConfigured } from "../../src/lib/supabase";
 import { JoinForm, validateJoin } from "../../src/lib/validation";
 import { colors } from "../../src/theme";
@@ -61,6 +61,7 @@ export default function Join() {
         <Field label="Anything else you'd like to share?" multiline placeholder="Tell us about your background, skills, or why you want to help…" value={f.message} onChangeText={(v) => set("message", v)} />
         {offlineAttempt ? <OfflineNotice afterSubmit subject={"Join Our Cause"} body={`Name: ${f.firstName} ${f.lastName}\nEmail: ${f.email}\nPhone: ${f.phone}\nZIP: ${f.zip}\nInterests: ${f.interests.join(", ")}\n\n${f.message}`} /> : null}
         {status ? <Banner kind={status.kind} text={status.text} /> : null}
+        {status?.kind === "error" ? <MailtoFallback subject={"Join Our Cause"} body={`Name: ${f.firstName} ${f.lastName}\nEmail: ${f.email}\nPhone: ${f.phone}\nZIP: ${f.zip}\nInterests: ${f.interests.join(", ")}\n\n${f.message}`} /> : null}
         <Button title={busy ? "Submitting…" : "Join the Movement"} onPress={submit} disabled={busy} />
       </ScrollView>
     </KeyboardAvoidingView>

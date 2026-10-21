@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Text } from "react-native";
 import { CONTACT_FIELDS } from "../../src/content";
-import { Banner, Button, Field, OfflineNotice, s } from "../../src/components/ui";
+import { Banner, Button, Field, MailtoFallback, OfflineNotice, s } from "../../src/components/ui";
 import { insertRow, isBackendConfigured } from "../../src/lib/supabase";
 import { ContactForm, validateContact } from "../../src/lib/validation";
 
@@ -41,6 +41,7 @@ export default function Contact() {
         <Field label="Message" required multiline placeholder="How can we help?" value={f.message} onChangeText={(v) => set("message", v)} error={errors.message} />
         {offlineAttempt ? <OfflineNotice afterSubmit subject={`Contact: ${f.subject}`} body={`Name: ${f.name}\nEmail: ${f.email}\nPhone: ${f.phone}\nSubject: ${f.subject}\n\n${f.message}`} /> : null}
         {status ? <Banner kind={status.kind} text={status.text} /> : null}
+        {status?.kind === "error" ? <MailtoFallback subject={`Contact: ${f.subject}`} body={`Name: ${f.name}\nEmail: ${f.email}\nPhone: ${f.phone}\nSubject: ${f.subject}\n\n${f.message}`} /> : null}
         <Button title={busy ? "Sending…" : "Send Message"} onPress={submit} disabled={busy} />
       </ScrollView>
     </KeyboardAvoidingView>
