@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
-import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { Banner, Button, s } from "../../src/components/ui";
 import { handleAuthCallbackUrl } from "../../src/lib/auth";
+import { latestAuthUrl, onDeepLink } from "../../src/lib/deeplink";
 import { colors } from "../../src/theme";
 
 /** Landing route for sacejc://auth/callback (email confirmation, magic link, password recovery). */
 export default function AuthCallback() {
   const router = useRouter();
-  const url = Linking.useURL(); // full incoming URL, including the #fragment
+  const [url, setUrl] = useState<string | null>(latestAuthUrl()); // full URL incl. #fragment
+  useEffect(() => onDeepLink((u) => { if (u.includes("auth/callback")) setUrl(u); }), []);
   const handled = useRef<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
