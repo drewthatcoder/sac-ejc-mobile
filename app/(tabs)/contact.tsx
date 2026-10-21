@@ -21,11 +21,11 @@ export default function Contact() {
     const e = validateContact(f); setErrors(e);
     if (Object.keys(e).length) return;
     setBusy(true);
-    const r = await insertRow("contact_submissions", { name: f.name.trim(), email: f.email.trim(), phone: f.phone.trim(), subject: f.subject.trim(), message: f.message.trim() });
+    const r = await insertRow("contact_submissions", { full_name: f.name.trim(), email: f.email.trim(), phone: f.phone.trim(), subject: f.subject.trim(), message: f.message.trim() });
     setBusy(false);
     if (r.ok) { setStatus({ kind: "success", text: "Thanks! Your message was sent. We'll get back to you soon." }); setF(empty); }
     else if (r.notConnected) setOfflineAttempt(true); // keep the typed data; never fake success
-    else setStatus({ kind: "error", text: `Something went wrong: ${r.error}` });
+    else setStatus({ kind: "error", text: "Sorry — we couldn't send your message right now. Please check your connection and try again. Your entries are still here." });
   }
 
   return (

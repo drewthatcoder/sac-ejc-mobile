@@ -29,7 +29,7 @@ export default function Join() {
     setBusy(false);
     if (r.ok) { setStatus({ kind: "success", text: "Welcome aboard! 🌱 Thanks for joining our cause. We'll be in touch soon!" }); setF(empty); }
     else if (r.notConnected) setOfflineAttempt(true); // keep the typed data; never fake success
-    else setStatus({ kind: "error", text: `Something went wrong: ${r.error}` });
+    else setStatus({ kind: "error", text: "Sorry — we couldn't submit your sign-up right now. Please check your connection and try again. Your entries are still here." });
   }
 
   return (

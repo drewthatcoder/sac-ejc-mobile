@@ -9,8 +9,19 @@ export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [notice, setNotice] = useState<string | null>(null);
-  const show = async (p: ReturnType<typeof authService.signIn>) => { const r = await p; if (!r.ok) setNotice(r.error); };
+  const [notice, setNotice] = useState<{ kind: "info" | "error" | "success"; text: string } | null>(null);
+  const [busy, setBusy] = useState(false);
+  async function signIn() {
+    setNotice(null);
+    if (!email.trim() || !password) return setNotice({ kind: "error", text: "Enter your email and password." });
+    setBusy(true); const r = await authService.signIn(email, password); setBusy(false);
+    if (r.ok) router.replace("/account");
+    else setNotice({ kind: r.notAvailable ? "info" : "error", text: r.error });
+  }
+  async function reset() {
+    setNotice(null); const r = await authService.resetPassword(email);
+    setNotice(r.ok ? { kind: "success", text: r.message ?? "Check your email." } : { kind: r.notAvailable ? "info" : "error", text: r.error });
+  }
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
@@ -22,11 +33,11 @@ export default function Login() {
         </View>
         <Field label="Email" placeholder="you@example.com" keyboardType="email-address" autoCapitalize="none" autoComplete="email" value={email} onChangeText={setEmail} />
         <Field label="Password" placeholder="Your password" secureTextEntry autoComplete="password" value={password} onChangeText={setPassword} />
-        <Pressable onPress={() => show(authService.resetPassword(email))} style={{ alignSelf: "flex-end", marginBottom: 16 }} accessibilityRole="link">
+        <Pressable onPress={reset} style={{ alignSelf: "flex-end", marginBottom: 16 }} accessibilityRole="link">
           <Text style={{ color: colors.primary, fontWeight: "600" }}>Forgot password?</Text>
         </Pressable>
-        {notice ? <Banner kind="info" text={notice} /> : null}
-        <Button title="Sign In" onPress={() => show(authService.signIn(email, password))} />
+        {notice ? <Banner kind={notice.kind} text={notice.text} /> : null}
+        <Button title={busy ? "Signing in…" : "Sign In"} onPress={signIn} disabled={busy} />
         <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 18 }}>
           <Text style={{ color: colors.muted }}>New here? </Text>
           <Link href="/signup" replace><Text style={{ color: colors.primary, fontWeight: "700" }}>Create account</Text></Link>

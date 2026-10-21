@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { Image, KeyboardAvoidingView, Platform, ScrollView, Text, View } from "react-native";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Banner, Button, Field, s } from "../src/components/ui";
 import { authService } from "../src/lib/auth";
 import { isEmail } from "../src/lib/validation";
 import { colors } from "../src/theme";
 
 export default function SignUp() {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
   const [f, setF] = useState({ name: "", email: "", password: "", confirm: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [notice, setNotice] = useState<string | null>(null);
+  const [notice, setNotice] = useState<{ kind: "info" | "error" | "success"; text: string } | null>(null);
   const set = (k: keyof typeof f, v: string) => { setF((p) => ({ ...p, [k]: v })); setErrors((e) => ({ ...e, [k]: "" })); };
 
   async function submit() {
@@ -21,8 +23,10 @@ export default function SignUp() {
     if (f.confirm !== f.password) e.confirm = "Passwords don't match";
     setErrors(e);
     if (Object.values(e).some(Boolean)) return;
-    const r = await authService.signUp(f.name, f.email, f.password);
-    if (!r.ok) setNotice(r.error);
+    setBusy(true); const r = await authService.signUp(f.name, f.email, f.password); setBusy(false);
+    if (!r.ok) setNotice({ kind: r.notAvailable ? "info" : "error", text: r.error });
+    else if (r.needsConfirmation) { setNotice({ kind: "success", text: r.message ?? "Check your email to confirm your account." }); setF({ name: "", email: "", password: "", confirm: "" }); }
+    else router.replace("/account");
   }
 
   return (
@@ -37,8 +41,8 @@ export default function SignUp() {
         <Field label="Email" placeholder="you@example.com" keyboardType="email-address" autoCapitalize="none" value={f.email} onChangeText={(v) => set("email", v)} error={errors.email} />
         <Field label="Password" placeholder="At least 8 characters" secureTextEntry value={f.password} onChangeText={(v) => set("password", v)} error={errors.password} />
         <Field label="Confirm Password" placeholder="Re-enter password" secureTextEntry value={f.confirm} onChangeText={(v) => set("confirm", v)} error={errors.confirm} />
-        {notice ? <Banner kind="info" text={notice} /> : null}
-        <Button title="Create account" onPress={submit} />
+        {notice ? <Banner kind={notice.kind} text={notice.text} /> : null}
+        <Button title={busy ? "Creating account…" : "Create account"} onPress={submit} disabled={busy} />
         <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 18 }}>
           <Text style={{ color: colors.muted }}>Already have an account? </Text>
           <Link href="/login" replace><Text style={{ color: colors.primary, fontWeight: "700" }}>Sign in</Text></Link>
