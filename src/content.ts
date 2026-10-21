@@ -55,9 +55,9 @@ export const FAQS = [
   { q: "TODO: Drew to fill in — How is air quality data collected?", a: "TODO: Drew to fill in." },
 ];
 
-// No public email/phone/social exists in the source site content as of 2026-10-20.
-// TODO: Drew to fill in a real org contact email; when set, forms offer a prefilled mailto: fallback.
-export const ORG_CONTACT_EMAIL: string | null = null;
+// Contact email provided by Mobile Lead (2026-10-21).
+// When set, the offline notice offers a prefilled mailto: fallback.
+export const ORG_CONTACT_EMAIL: string | null = "techsupport@cityoftreestech.com";
 
 export const OFFLINE_NOTICE =
   "Online submissions aren't available in the app yet. We're still connecting this form.";

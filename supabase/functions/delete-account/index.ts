@@ -31,7 +31,8 @@ Deno.serve(async (req) => {
   const user = data.user;
 
   // Fail closed: if any data delete errors, stop before deleting the auth user.
-  if (user.email) {
+  // Only match submissions by email once the user has proven they own that address.
+  if (user.email && user.email_confirmed_at) {
     // Case-insensitive exact match: ILIKE with LIKE wildcards (and the escape char) escaped.
     const pattern = user.email.replace(/[\\%_]/g, (c) => "\\" + c);
     for (const table of ["contact_submissions", "join_submissions"]) {
