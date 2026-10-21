@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
+import * as Linking from "expo-linking";
 import { supabase } from "./supabase";
+
+/** Deep link Supabase sends users back to (sacejc://auth/callback in builds). */
+export const authCallbackUrl = () => Linking.createURL("auth/callback");
 
 export type AuthResult =
   | { ok: true; needsConfirmation?: boolean; message?: string }
@@ -27,7 +31,7 @@ export const authService = {
 
   async signUp(fullName: string, email: string, password: string): Promise<AuthResult> {
     if (!supabase) return notAvailable;
-    const { data, error } = await supabase.auth.signUp({ email: email.trim(), password, options: { data: { full_name: fullName.trim() } } });
+    const { data, error } = await supabase.auth.signUp({ email: email.trim(), password, options: { data: { full_name: fullName.trim() }, emailRedirectTo: authCallbackUrl() } });
     if (error) return { ok: false, error: friendly(error.message) };
     if (!data.session) return { ok: true, needsConfirmation: true, message: "Almost there! Check your email to confirm your account, then sign in." };
     return { ok: true };
@@ -36,7 +40,7 @@ export const authService = {
   async resetPassword(email: string): Promise<AuthResult> {
     if (!supabase) return notAvailable;
     if (!email.trim()) return { ok: false, error: "Enter your email above, then tap “Forgot password?” again." };
-    const { error } = await supabase.auth.resetPasswordForEmail(email.trim());
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: authCallbackUrl() });
     return error ? { ok: false, error: friendly(error.message) } : { ok: true, message: "If an account exists for that email, we've sent a reset link." };
   },
 
@@ -70,4 +74,52 @@ export function useSession(): { session: Session | null; loading: boolean } {
     return () => data.subscription.unsubscribe();
   }, []);
   return { session, loading };
+}
+
+export type CallbackResult =
+  | { ok: true; type: string }
+  | { ok: false; error: string };
+
+function expiredOrInvalid(code?: string | null, desc?: string | null): string {
+  const d = (desc ?? "").replace(/\+/g, " ");
+  if (/expired/i.test(d) || code === "otp_expired") return "This link has expired. Please request a new one.";
+  if (d) return `This link didn't work: ${d}`;
+  return "This link is invalid or has already been used. Please request a new one.";
+}
+
+/** Parses a Supabase auth redirect (implicit #access_token… or PKCE ?code=…) and starts a session. */
+export async function handleAuthCallbackUrl(url: string): Promise<CallbackResult> {
+  if (!supabase) return { ok: false, error: ACCOUNTS_COMING_SOON };
+  const [beforeHash, hash = ""] = url.split("#");
+  const query = beforeHash.includes("?") ? beforeHash.slice(beforeHash.indexOf("?") + 1) : "";
+  const params = new URLSearchParams(query);
+  new URLSearchParams(hash).forEach((v, k) => params.set(k, v));
+
+  const err = params.get("error") || params.get("error_code");
+  if (err) return { ok: false, error: expiredOrInvalid(params.get("error_code"), params.get("error_description")) };
+
+  const type = params.get("type") ?? "signup";
+  const code = params.get("code");
+  const access_token = params.get("access_token");
+  const refresh_token = params.get("refresh_token");
+  try {
+    if (code) {
+      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      if (error) return { ok: false, error: expiredOrInvalid(error.code, error.message) };
+    } else if (access_token && refresh_token) {
+      const { error } = await supabase.auth.setSession({ access_token, refresh_token });
+      if (error) return { ok: false, error: expiredOrInvalid(error.code, error.message) };
+    } else {
+      return { ok: false, error: expiredOrInvalid() };
+    }
+  } catch (e) {
+    return { ok: false, error: expiredOrInvalid(null, e instanceof Error ? e.message : String(e)) };
+  }
+  return { ok: true, type };
+}
+
+export async function updatePassword(password: string): Promise<AuthResult> {
+  if (!supabase) return notAvailable;
+  const { error } = await supabase.auth.updateUser({ password });
+  return error ? { ok: false, error: friendly(error.message) } : { ok: true };
 }
