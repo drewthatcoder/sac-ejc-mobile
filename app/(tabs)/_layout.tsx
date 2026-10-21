@@ -22,7 +22,7 @@ export default function Layout() {
       <Tabs.Screen name="live-data" options={{ title: "Live Data", tabBarIcon: icon("📈") }} />
       <Tabs.Screen name="donate" options={{ title: "Donate", tabBarIcon: icon("💚") }} />
       <Tabs.Screen name="contact" options={{ title: "Contact", tabBarIcon: icon("✉️") }} />
-      <Tabs.Screen name="faq" options={{ title: "FAQ", tabBarIcon: icon("❓") }} />
+      <Tabs.Screen name="faq" options={{ href: null, title: "FAQ", tabBarIcon: icon("❓") }} />
     </Tabs>
   );
 }

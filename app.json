@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "org.sacejc.app"
     },
     "android": {

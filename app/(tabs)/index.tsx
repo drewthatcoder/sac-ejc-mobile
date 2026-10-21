@@ -1,7 +1,7 @@
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { MISSION_PILLARS, ORG_NAME, PARTNERS, SUBTITLE, TAGLINE } from "../../src/content";
-import { Button, s } from "../../src/components/ui";
+import { Button, PrivacyLink, s } from "../../src/components/ui";
 import { colors } from "../../src/theme";
 
 export default function Home() {
@@ -39,6 +39,7 @@ export default function Home() {
             </View>
           ))}
         </View>
+        <PrivacyLink style={{ marginTop: 8 }} />
       </View>
     </ScrollView>
   );

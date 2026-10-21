@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { Link, useRouter } from "expo-router";
-import { Banner, Button, Field, s } from "../src/components/ui";
+import { Banner, Button, PrivacyLink, Field, s } from "../src/components/ui";
 import { authService } from "../src/lib/auth";
 import { colors } from "../src/theme";
 
@@ -43,7 +43,8 @@ export default function Login() {
           <Link href="/signup" replace><Text style={{ color: colors.primary, fontWeight: "700" }}>Create account</Text></Link>
         </View>
         <Button title="Continue as guest" variant="outline" style={{ marginTop: 22 }} onPress={() => (router.canGoBack() ? router.back() : router.replace("/"))} />
-      </ScrollView>
+        <PrivacyLink style={{ marginTop: 18 }} />
+    </ScrollView>
     </KeyboardAvoidingView>
   );
 }

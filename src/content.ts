@@ -63,3 +63,5 @@ export const OFFLINE_NOTICE =
   "Online submissions aren't available in the app yet. We're still connecting this form.";
 export const OFFLINE_NO_ALTERNATIVE =
   "Please check back soon — your entries are saved on this screen so you won't lose them.";
+
+export const PRIVACY_POLICY_URL = "https://sac-ejc.org/privacy";

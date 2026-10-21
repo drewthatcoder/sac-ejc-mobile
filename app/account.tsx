@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ActivityIndicator, Alert, ScrollView, Text, View } from "react-native";
 import { useRouter } from "expo-router";
-import { Banner, Button, s } from "../src/components/ui";
+import { Banner, Button, PrivacyLink, s } from "../src/components/ui";
 import { authService, displayName, useSession } from "../src/lib/auth";
 import { colors } from "../src/theme";
 
@@ -19,6 +19,7 @@ export default function Account() {
         <Text style={s.h1}>You're browsing as a guest</Text>
         <Text style={s.lead}>Sign in to manage your SAC EJC account. Everything else in the app works without one.</Text>
         <Button title="Sign In" onPress={() => router.replace("/login")} />
+        <PrivacyLink style={{ marginTop: 18 }} />
       </ScrollView>
     );
   }
@@ -47,6 +48,7 @@ export default function Account() {
       {error ? <Banner kind="error" text={error} /> : null}
       <Button title="Sign out" variant="outline" onPress={async () => { await authService.signOut(); router.replace("/"); }} />
       <Button title={busy ? "Deleting…" : "Delete account"} disabled={busy} style={{ marginTop: 14, backgroundColor: colors.error }} onPress={confirmDelete} />
+      <PrivacyLink style={{ marginTop: 18 }} />
     </ScrollView>
   );
 }

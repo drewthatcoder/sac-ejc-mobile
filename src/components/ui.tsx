@@ -2,7 +2,7 @@ import React from "react";
 import { Pressable, StyleSheet, Text, TextInput, TextInputProps, View, ViewStyle } from "react-native";
 import { Linking } from "react-native";
 import { colors } from "../theme";
-import { OFFLINE_NO_ALTERNATIVE, OFFLINE_NOTICE, ORG_CONTACT_EMAIL } from "../content";
+import { OFFLINE_NO_ALTERNATIVE, OFFLINE_NOTICE, ORG_CONTACT_EMAIL, PRIVACY_POLICY_URL } from "../content";
 
 export function Field({ label, required, error, ...props }: TextInputProps & { label: string; required?: boolean; error?: string }) {
   return (
@@ -44,6 +44,15 @@ export const s = StyleSheet.create({
   banner: { borderRadius: 10, padding: 14, marginBottom: 14 },
   bannerText: { color: colors.text, fontSize: 15, lineHeight: 21 },
 });
+
+/** Opens the privacy policy in the system browser. */
+export function PrivacyLink({ style }: { style?: ViewStyle }) {
+  return (
+    <Pressable accessibilityRole="link" onPress={() => Linking.openURL(PRIVACY_POLICY_URL)} style={[{ alignSelf: "center", padding: 8 }, style]}>
+      <Text style={{ color: colors.muted, textDecorationLine: "underline", fontSize: 14 }}>Privacy Policy</Text>
+    </Pressable>
+  );
+}
 
 /** Shown when no backend is configured. Offers a mailto: fallback only if a real org email exists. */
 export function OfflineNotice({ afterSubmit, subject, body }: { afterSubmit?: boolean; subject: string; body: string }) {

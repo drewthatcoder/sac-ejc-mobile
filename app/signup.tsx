@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Image, KeyboardAvoidingView, Platform, ScrollView, Text, View } from "react-native";
 import { Link, useRouter } from "expo-router";
-import { Banner, Button, Field, s } from "../src/components/ui";
+import { Banner, Button, PrivacyLink, Field, s } from "../src/components/ui";
 import { authService } from "../src/lib/auth";
 import { isEmail } from "../src/lib/validation";
 import { colors } from "../src/theme";
@@ -47,7 +47,8 @@ export default function SignUp() {
           <Text style={{ color: colors.muted }}>Already have an account? </Text>
           <Link href="/login" replace><Text style={{ color: colors.primary, fontWeight: "700" }}>Sign in</Text></Link>
         </View>
-      </ScrollView>
+        <PrivacyLink style={{ marginTop: 18 }} />
+    </ScrollView>
     </KeyboardAvoidingView>
   );
 }
