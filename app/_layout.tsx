@@ -130,11 +130,11 @@ function RootNavigator() {
       <Stack screenOptions={{ headerStyle: { backgroundColor: colors.bg }, headerTitle: ThemedHeaderTitle, headerTintColor: colors.primary, contentStyle: { backgroundColor: colors.bg }, headerShadowVisible: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ presentation: "modal", title: "Sign In" }} />
-        <Stack.Screen name="account" options={{ presentation: "modal", title: "Account" }} />
+        <Stack.Screen name="account" options={{ presentation: "modal", title: "Edit Account Info" }} />
         <Stack.Screen name="auth/callback" options={{ title: "Signing in…", headerBackVisible: false }} />
         <Stack.Screen name="set-password" options={{ title: "Set New Password", headerBackVisible: false }} />
         <Stack.Screen name="signup" options={{ presentation: "modal", title: "Create Account" }} />
-        <Stack.Screen name="settings" options={{ title: "Settings" }} />
+        <Stack.Screen name="faq" options={{ title: "FAQ" }} />
         <Stack.Screen name="welcome" options={{ headerShown: false, gestureEnabled: false, animation: "none" }} />
       </Stack>
       <KeyboardDoneAccessory />

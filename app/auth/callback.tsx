@@ -21,7 +21,10 @@ export default function AuthCallback() {
     handleAuthCallbackUrl(url).then((r) => {
       if (!r.ok) return setError(r.error);
       if (r.type === "recovery") router.replace("/set-password");
-      else router.replace({ pathname: "/account", params: { message: "Email confirmed, you're signed in." } });
+      else router.replace({
+        pathname: "/account",
+        params: { message: r.type === "email_change" ? "Your new email is confirmed." : "Email confirmed, you're signed in." },
+      });
     });
   }, [url, router]);
 

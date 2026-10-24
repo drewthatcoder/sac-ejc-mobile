@@ -1,5 +1,5 @@
 import { Link, Tabs } from "expo-router";
-import { ColorValue, Pressable, Text, View } from "react-native";
+import { ColorValue, Pressable, Text } from "react-native";
 import { ThemedHeaderTitle } from "../../src/components/ui";
 import { firstName, useSession } from "../../src/lib/auth";
 import { useTheme } from "../../src/lib/theme";
@@ -36,24 +36,17 @@ export default function Layout() {
     }}>
       <Tabs.Screen name="index" options={{ title: "Home", headerTitle: HomeHeaderTitle, tabBarIcon: icon("🏠"),
         headerRight: () => (
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Link href="/settings" asChild>
-              <Pressable accessibilityRole="button" accessibilityLabel="Settings" style={{ paddingHorizontal: 8, paddingVertical: 6 }}>
-                <Text style={{ fontSize: 18 }}>⚙️</Text>
-              </Pressable>
-            </Link>
-            <Link href={session ? "/account" : "/login"} asChild>
-              <Pressable accessibilityRole="button" accessibilityLabel={session ? "Account" : "Sign in"} style={{ marginRight: 16, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, borderWidth: 1.5, borderColor: colors.primary }}>
-                <Text style={{ color: colors.primary, fontWeight: "700" }}>👤 {name ? (name.length > 14 ? name.slice(0, 13) + "…" : name) : "Sign in"}</Text>
-              </Pressable>
-            </Link>
-          </View>
+          <Link href={session ? "/account" : "/login"} asChild>
+            <Pressable accessibilityRole="button" accessibilityLabel={session ? "Account" : "Sign in"} style={{ marginRight: 16, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, borderWidth: 1.5, borderColor: colors.primary }}>
+              <Text style={{ color: colors.primary, fontWeight: "700" }}>👤 {name ? (name.length > 14 ? name.slice(0, 13) + "…" : name) : "Sign in"}</Text>
+            </Pressable>
+          </Link>
         ) }} />
       <Tabs.Screen name="join" options={{ title: "Join", headerTitle: JoinHeaderTitle, tabBarIcon: icon("🤝") }} />
       <Tabs.Screen name="live-data" options={{ title: "Live Data", tabBarIcon: icon("📈") }} />
       <Tabs.Screen name="donate" options={{ title: "Donate", tabBarIcon: icon("💚") }} />
       <Tabs.Screen name="contact" options={{ title: "Contact", tabBarIcon: icon("✉️") }} />
-      <Tabs.Screen name="faq" options={{ title: "FAQ", tabBarIcon: icon("❓") }} />
+      <Tabs.Screen name="settings" options={{ title: "Settings", tabBarIcon: icon("⚙️") }} />
     </Tabs>
   );
 }
