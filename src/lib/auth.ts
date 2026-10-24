@@ -54,6 +54,26 @@ export const authService = {
     return error ? { ok: false, error: friendly(error.message) } : { ok: true, message: "If an account exists for that email, we've sent a reset link." };
   },
 
+  async updateProfile(firstName: string, lastName: string): Promise<AuthResult> {
+    if (!supabase) return notAvailable;
+    const first = firstName.trim();
+    const last = lastName.trim();
+    const { error } = await supabase.auth.updateUser({
+      data: { first_name: first, last_name: last, full_name: `${first} ${last}`.trim() },
+    });
+    return error ? { ok: false, error: friendly(error.message) } : { ok: true, message: "Your name was updated." };
+  },
+
+  async updateEmail(email: string): Promise<AuthResult> {
+    if (!supabase) return notAvailable;
+    const { error } = await supabase.auth.updateUser(
+      { email: email.trim() },
+      { emailRedirectTo: authCallbackUrl() },
+    );
+    if (error) return { ok: false, error: friendly(error.message) };
+    return { ok: true, message: "We sent a confirmation link. Your email changes after you confirm it." };
+  },
+
   async signOut(): Promise<void> {
     await supabase?.auth.signOut();
   },
