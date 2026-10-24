@@ -1,11 +1,12 @@
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { MISSION_PILLARS, ORG_NAME, PARTNERS, SUBTITLE, TAGLINE } from "../../src/content";
-import { Button, PrivacyLink, s } from "../../src/components/ui";
-import { colors } from "../../src/theme";
+import { Button, PrivacyLink } from "../../src/components/ui";
+import { useTheme } from "../../src/lib/theme";
 
 export default function Home() {
   const router = useRouter();
+  const { colors, s } = useTheme();
   return (
     <ScrollView style={{ backgroundColor: colors.bg }}>
       <View style={st.hero}>
@@ -17,7 +18,7 @@ export default function Home() {
           <Text style={st.sub}>{SUBTITLE}</Text>
           <View style={{ flexDirection: "row", gap: 10, marginTop: 16 }}>
             <Button title="Join Our Cause" onPress={() => router.push("/join")} style={{ flex: 1 }} />
-            <Button title="Donate" onPress={() => router.push("/donate")} style={{ flex: 1, backgroundColor: colors.accent }} />
+            <Button title="Donate" labelColor={colors.onAccent} onPress={() => router.push("/donate")} style={{ flex: 1, backgroundColor: colors.accent }} />
           </View>
         </View>
       </View>
@@ -26,16 +27,16 @@ export default function Home() {
         {MISSION_PILLARS.map((p) => (
           <View key={p.title} style={s.card}>
             <Text style={{ fontSize: 28 }}>{p.icon}</Text>
-            <Text style={st.pillarTitle}>{p.title}</Text>
+            <Text style={{ fontSize: 19, fontWeight: "700", color: colors.text, marginVertical: 6 }}>{p.title}</Text>
             <Text style={{ color: colors.muted, lineHeight: 21 }}>{p.description}</Text>
           </View>
         ))}
         <Text style={[s.h1, { marginTop: 10 }]}>Our Partners</Text>
         <View style={st.grid}>
           {PARTNERS.map((p) => (
-            <View key={p.name} style={st.partner}>
+            <View key={p.name} style={[st.partner, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <Image source={p.image} style={st.partnerImg} resizeMode="contain" accessibilityLabel={p.name} />
-              <Text style={st.partnerName}>{p.name}</Text>
+              <Text style={[st.partnerName, { color: colors.muted }]}>{p.name}</Text>
             </View>
           ))}
         </View>
@@ -52,9 +53,8 @@ const st = StyleSheet.create({
   org: { color: "#fff", fontSize: 24, fontWeight: "800", textAlign: "center" },
   tagline: { color: "#cfe8c9", fontSize: 18, fontWeight: "600", marginTop: 6 },
   sub: { color: "#eef", fontSize: 15, textAlign: "center", marginTop: 8 },
-  pillarTitle: { fontSize: 19, fontWeight: "700", color: colors.text, marginVertical: 6 },
   grid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" },
-  partner: { width: "48%", backgroundColor: "#fff", borderRadius: 12, padding: 10, marginBottom: 12, alignItems: "center", borderWidth: 1, borderColor: colors.border },
+  partner: { width: "48%", borderRadius: 12, padding: 10, marginBottom: 12, alignItems: "center", borderWidth: 1 },
   partnerImg: { width: "100%", height: 70 },
-  partnerName: { fontSize: 12, textAlign: "center", color: colors.muted, marginTop: 6 },
+  partnerName: { fontSize: 12, textAlign: "center", marginTop: 6 },
 });

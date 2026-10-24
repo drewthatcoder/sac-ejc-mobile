@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, Text } from "react-native";
+import { Text } from "react-native";
 import { CONTACT_FIELDS } from "../../src/content";
-import { Banner, Button, Field, MailtoFallback, OfflineNotice, s } from "../../src/components/ui";
+import { FormScreen } from "../../src/components/form-screen";
+import { Banner, Button, Field, MailtoFallback, OfflineNotice } from "../../src/components/ui";
+import { useTheme } from "../../src/lib/theme";
 import { insertRow, isBackendConfigured } from "../../src/lib/supabase";
 import { ContactForm, validateContact } from "../../src/lib/validation";
 
@@ -9,6 +11,7 @@ const empty: ContactForm = { name: "", email: "", phone: "", subject: "", messag
 const kb = { email: "email-address", tel: "phone-pad", text: "default" } as const;
 
 export default function Contact() {
+  const { s } = useTheme();
   const [f, setF] = useState(empty);
   const [errors, setErrors] = useState<ReturnType<typeof validateContact>>({});
   const [status, setStatus] = useState<{ kind: "success" | "info" | "error"; text: string } | null>(null);
@@ -29,8 +32,7 @@ export default function Contact() {
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <ScrollView contentContainerStyle={s.screen} keyboardShouldPersistTaps="handled">
+    <FormScreen>
         <Text style={s.h1}>Contact Us</Text>
         <Text style={s.lead}>Have a question or want to get involved? Send us a message.</Text>
         {!isBackendConfigured ? <OfflineNotice subject={`Contact: ${f.subject}`} body={`Name: ${f.name}\nEmail: ${f.email}\nPhone: ${f.phone}\nSubject: ${f.subject}\n\n${f.message}`} /> : null}
@@ -43,7 +45,6 @@ export default function Contact() {
         {status ? <Banner kind={status.kind} text={status.text} /> : null}
         {status?.kind === "error" ? <MailtoFallback subject={`Contact: ${f.subject}`} body={`Name: ${f.name}\nEmail: ${f.email}\nPhone: ${f.phone}\nSubject: ${f.subject}\n\n${f.message}`} /> : null}
         <Button title={busy ? "Sending…" : "Send Message"} onPress={submit} disabled={busy} />
-      </ScrollView>
-    </KeyboardAvoidingView>
+    </FormScreen>
   );
 }

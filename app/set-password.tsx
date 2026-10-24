@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, Text } from "react-native";
+import { Text } from "react-native";
 import { useRouter } from "expo-router";
-import { Banner, Button, Field, s } from "../src/components/ui";
+import { FormScreen } from "../src/components/form-screen";
+import { Banner, Button, Field } from "../src/components/ui";
 import { updatePassword, useSession } from "../src/lib/auth";
+import { useTheme } from "../src/lib/theme";
 
 export default function SetPassword() {
+  const { s } = useTheme();
   const router = useRouter();
   const { session, loading } = useSession();
   const [pw, setPw] = useState("");
@@ -26,8 +29,7 @@ export default function SetPassword() {
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <ScrollView contentContainerStyle={s.screen} keyboardShouldPersistTaps="handled">
+    <FormScreen>
         <Text style={s.h1}>Set a new password</Text>
         {!loading && !session ? (
           <Banner kind="error" text="Your reset link has expired or was already used. Please request a new one from Sign In." />
@@ -39,7 +41,6 @@ export default function SetPassword() {
             <Button title={busy ? "Saving…" : "Save new password"} onPress={save} disabled={busy} />
           </>
         )}
-      </ScrollView>
-    </KeyboardAvoidingView>
+    </FormScreen>
   );
 }

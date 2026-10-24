@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 import { Link, useRouter } from "expo-router";
-import { Banner, Button, PrivacyLink, Field, s } from "../src/components/ui";
+import { FormScreen } from "../src/components/form-screen";
+import { Banner, Button, PrivacyLink, Field } from "../src/components/ui";
 import { authService } from "../src/lib/auth";
-import { colors } from "../src/theme";
+import { useTheme } from "../src/lib/theme";
 
 export default function Login() {
+  const { colors, s } = useTheme();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,8 +26,7 @@ export default function Login() {
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <ScrollView contentContainerStyle={s.screen} keyboardShouldPersistTaps="handled">
+    <FormScreen>
         <View style={{ alignItems: "center", marginBottom: 18 }}>
           <Image source={require("../assets/images/logo-sejc.png")} style={{ width: 180, height: 96 }} resizeMode="contain" accessibilityLabel="SAC EJC logo" />
           <Text style={[s.h1, { marginTop: 10 }]}>Welcome back</Text>
@@ -44,7 +45,6 @@ export default function Login() {
         </View>
         <Button title="Continue as guest" variant="outline" style={{ marginTop: 22 }} onPress={() => (router.canGoBack() ? router.back() : router.replace("/"))} />
         <PrivacyLink style={{ marginTop: 18 }} />
-    </ScrollView>
-    </KeyboardAvoidingView>
+    </FormScreen>
   );
 }
