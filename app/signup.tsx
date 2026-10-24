@@ -38,8 +38,7 @@ export default function SignUp() {
     <FormScreen>
       <View style={{ alignItems: "center", marginBottom: 18 }}>
         <Image source={require("../assets/images/logo-sejc.png")} style={{ width: 180, height: 96 }} resizeMode="contain" accessibilityLabel="SAC EJC logo" />
-        <Text style={[s.h1, { marginTop: 10 }]}>Create your account</Text>
-        <Text style={[s.lead, { textAlign: "center", marginBottom: 0 }]}>Join the SAC EJC community</Text>
+        <Text style={[s.lead, { textAlign: "center", marginTop: 12, marginBottom: 0 }]}>Join the SAC EJC community</Text>
       </View>
       <Field label="First name" required placeholder="Your first name" autoComplete="given-name" textContentType="givenName" value={f.firstName} onChangeText={(v) => set("firstName", v)} error={errors.firstName} />
       <Field label="Last name" required placeholder="Your last name" autoComplete="family-name" textContentType="familyName" value={f.lastName} onChangeText={(v) => set("lastName", v)} error={errors.lastName} />

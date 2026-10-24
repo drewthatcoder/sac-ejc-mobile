@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Banner, Button, Field } from "../src/components/ui";
 import { FormScreen } from "../src/components/form-screen";
@@ -10,6 +10,11 @@ import { isEmail } from "../src/lib/validation";
 import type { Session } from "@supabase/supabase-js";
 
 type Notice = { kind: "success" | "info" | "error"; text: string };
+
+function GroupDivider() {
+  const { colors } = useTheme();
+  return <View style={{ borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border, marginTop: 10, marginBottom: 22 }} />;
+}
 
 /** Signed-in profile editor. Name updates user_metadata and the header chip on the next session event. */
 function EditAccountForm({ session, initialMessage }: { session: Session; initialMessage?: string }) {
@@ -73,22 +78,20 @@ function EditAccountForm({ session, initialMessage }: { session: Session; initia
 
   return (
     <FormScreen>
-      <Text style={s.h1}>Edit account info</Text>
       <Text style={s.lead}>Changes to your name show on the account chip right away. Email changes after you confirm the link.</Text>
       {banner ? <Banner kind={banner.kind} text={banner.text} /> : null}
 
-      <Text style={s.label}>Name</Text>
       <Field label="First name" required autoComplete="given-name" textContentType="givenName" value={firstName} onChangeText={(v) => { setFirstName(v); setNameError((e) => ({ ...e, firstName: undefined })); }} error={nameError.firstName} />
       <Field label="Last name" required autoComplete="family-name" textContentType="familyName" value={lastName} onChangeText={(v) => { setLastName(v); setNameError((e) => ({ ...e, lastName: undefined })); }} error={nameError.lastName} />
       {nameNotice ? <Banner kind={nameNotice.kind} text={nameNotice.text} /> : null}
       <Button title={busy === "name" ? "Saving…" : "Save name"} disabled={busy !== null} onPress={saveName} />
 
-      <Text style={[s.label, { marginTop: 22 }]}>Email</Text>
+      <GroupDivider />
       <Field label="Email" required keyboardType="email-address" autoCapitalize="none" autoComplete="email" value={email} onChangeText={(v) => { setEmail(v); setEmailError(""); }} error={emailError} />
       {emailNotice ? <Banner kind={emailNotice.kind} text={emailNotice.text} /> : null}
       <Button title={busy === "email" ? "Sending…" : "Update email"} disabled={busy !== null} onPress={saveEmail} />
 
-      <Text style={[s.label, { marginTop: 22 }]}>Password</Text>
+      <GroupDivider />
       <Field label="New password" placeholder="At least 8 characters" secureTextEntry autoComplete="new-password" textContentType="newPassword" value={password} onChangeText={(v) => { setPassword(v); setPasswordError((e) => ({ ...e, password: undefined })); }} error={passwordError.password} />
       <Field label="Confirm new password" placeholder="Re-enter password" secureTextEntry autoComplete="new-password" textContentType="newPassword" value={confirm} onChangeText={(v) => { setConfirm(v); setPasswordError((e) => ({ ...e, confirm: undefined })); }} error={passwordError.confirm} />
       {passwordNotice ? <Banner kind={passwordNotice.kind} text={passwordNotice.text} /> : null}
