@@ -1,13 +1,10 @@
 import { useState } from "react";
-import { Text } from "react-native";
 import { useRouter } from "expo-router";
 import { FormScreen } from "../src/components/form-screen";
 import { Banner, Button, Field } from "../src/components/ui";
 import { updatePassword, useSession } from "../src/lib/auth";
-import { useTheme } from "../src/lib/theme";
 
 export default function SetPassword() {
-  const { s } = useTheme();
   const router = useRouter();
   const { session, loading } = useSession();
   const [pw, setPw] = useState("");
@@ -30,7 +27,6 @@ export default function SetPassword() {
 
   return (
     <FormScreen>
-        <Text style={s.h1}>Set a new password</Text>
         {!loading && !session ? (
           <Banner kind="error" text="Your reset link has expired or was already used. Please request a new one from Sign In." />
         ) : (

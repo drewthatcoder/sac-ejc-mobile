@@ -57,7 +57,6 @@ export default function Settings() {
 
   return (
     <ScrollView contentContainerStyle={s.screen} style={{ flex: 1, backgroundColor: colors.bg }}>
-      <Text style={s.h1}>Settings</Text>
       <Text style={s.lead}>Appearance, your account, and support.</Text>
 
       <Text style={s.label}>Appearance</Text>
