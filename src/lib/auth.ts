@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import * as Linking from "expo-linking";
+import { deriveFirstName } from "./name";
 import { supabase } from "./supabase";
 
 /** Deep link Supabase sends users back to (sacejc://auth/callback in builds). */
@@ -29,9 +30,18 @@ export const authService = {
     return error ? { ok: false, error: friendly(error.message) } : { ok: true };
   },
 
-  async signUp(fullName: string, email: string, password: string): Promise<AuthResult> {
+  async signUp(firstName: string, lastName: string, email: string, password: string): Promise<AuthResult> {
     if (!supabase) return notAvailable;
-    const { data, error } = await supabase.auth.signUp({ email: email.trim(), password, options: { data: { full_name: fullName.trim() }, emailRedirectTo: authCallbackUrl() } });
+    const first = firstName.trim();
+    const last = lastName.trim();
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+      options: {
+        data: { first_name: first, last_name: last, full_name: `${first} ${last}`.trim() },
+        emailRedirectTo: authCallbackUrl(),
+      },
+    });
     if (error) return { ok: false, error: friendly(error.message) };
     if (!data.session) return { ok: true, needsConfirmation: true, message: "Almost there! Check your email to confirm your account, then sign in." };
     return { ok: true };
@@ -62,6 +72,12 @@ export function displayName(session: Session | null): string | null {
   if (!session) return null;
   const n = session.user.user_metadata?.full_name;
   return typeof n === "string" && n.trim() ? n.trim() : session.user.email ?? "Account";
+}
+
+/** Header chip and other first-name UI. Existing users may only have full_name. */
+export function firstName(session: Session | null): string | null {
+  if (!session) return null;
+  return deriveFirstName(session.user.user_metadata, session.user.email) ?? "Account";
 }
 
 export function useSession(): { session: Session | null; loading: boolean } {

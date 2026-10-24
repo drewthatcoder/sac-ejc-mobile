@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { INTERESTS } from "../../src/content";
-import { Banner, Button, Field, MailtoFallback, OfflineNotice, s } from "../../src/components/ui";
+import { FormScreen } from "../../src/components/form-screen";
+import { Banner, Button, Field, MailtoFallback, OfflineNotice } from "../../src/components/ui";
 import { insertRow, isBackendConfigured } from "../../src/lib/supabase";
+import { useTheme } from "../../src/lib/theme";
 import { JoinForm, validateJoin } from "../../src/lib/validation";
-import { colors } from "../../src/theme";
 
 const empty: JoinForm = { firstName: "", lastName: "", email: "", phone: "", zip: "", interests: [], message: "" };
 
 export default function Join() {
+  const { colors, s } = useTheme();
   const [f, setF] = useState(empty);
   const [errors, setErrors] = useState<ReturnType<typeof validateJoin>>({});
   const [status, setStatus] = useState<{ kind: "success" | "info" | "error"; text: string } | null>(null);
@@ -33,8 +35,7 @@ export default function Join() {
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <ScrollView contentContainerStyle={s.screen} keyboardShouldPersistTaps="handled">
+    <FormScreen>
         <Text style={s.h1}>Join Our Cause</Text>
         <Text style={s.lead}>Become part of the movement for environmental justice in Sacramento.</Text>
         {!isBackendConfigured ? <OfflineNotice subject={"Join Our Cause"} body={`Name: ${f.firstName} ${f.lastName}\nEmail: ${f.email}\nPhone: ${f.phone}\nZIP: ${f.zip}\nInterests: ${f.interests.join(", ")}\n\n${f.message}`} /> : null}
@@ -51,7 +52,7 @@ export default function Join() {
             const on = f.interests.includes(i.id);
             return (
               <Pressable key={i.id} onPress={() => toggle(i.id)} accessibilityRole="checkbox" accessibilityState={{ checked: on }}
-                style={{ width: "48%", padding: 12, borderRadius: 12, borderWidth: 2, marginBottom: 10, borderColor: on ? colors.primary : colors.border, backgroundColor: on ? "#e3f3e8" : "#fff" }}>
+                style={{ width: "48%", padding: 12, borderRadius: 12, borderWidth: 2, marginBottom: 10, borderColor: on ? colors.primary : colors.border, backgroundColor: on ? colors.selectedBg : colors.card }}>
                 <Text style={{ color: on ? colors.text : colors.muted, fontWeight: on ? "700" : "500" }}>{on ? "✓ " : ""}{i.label}</Text>
               </Pressable>
             );
@@ -63,7 +64,6 @@ export default function Join() {
         {status ? <Banner kind={status.kind} text={status.text} /> : null}
         {status?.kind === "error" ? <MailtoFallback subject={"Join Our Cause"} body={`Name: ${f.firstName} ${f.lastName}\nEmail: ${f.email}\nPhone: ${f.phone}\nZIP: ${f.zip}\nInterests: ${f.interests.join(", ")}\n\n${f.message}`} /> : null}
         <Button title={busy ? "Submitting…" : "Join the Movement"} onPress={submit} disabled={busy} />
-      </ScrollView>
-    </KeyboardAvoidingView>
+    </FormScreen>
   );
 }
